@@ -1,0 +1,4 @@
+[submodule "src/uaa"]
+	path = src/uaa
+	url = git@github.com:cloudfoundry/uaa.git
+	branch = develop
