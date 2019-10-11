@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "uaa-k8srelease.fullname" . }}
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/uaa-configmap.yaml") . | sha256sum }}
   labels:
 {{ include "uaa-k8srelease.labels" . | indent 4 }}
 spec:
@@ -25,19 +27,36 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
+            - containerPort: 8080
           livenessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /healthz
+              port: 8080
           readinessProbe:
             httpGet:
-              path: /
-              port: http
+              path: /healthz
+              port: 8080
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          - name: uaa
+            mountPath: /workspace/uaa.yml
+            subPath: uaa.yml
+          - name: logs
+            mountPath: /workspace/logs
+          env:
+            - name: CLOUDFOUNDRY_CONFIG_PATH
+              value: /workspace
+            - name: CLOUDFOUNDRY_LOG_PATH
+              value: /workspace/logs
+            - name: CATALINA_OPTS
+              value: "-Xmx768m -XX:MaxMetaspaceSize=256m"
+      volumes:
+        - name: uaa
+          configMap:
+            name: uaa
+        - name: logs
+          emptyDir: {}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
