@@ -28,7 +28,7 @@ To build the image
 > cd src/uaa
 > gradlew clean assemble
 > cd uaa/build/libs
-> pack build --builder cloudfoundry/cnb:cflinuxfs3 --buildpack org.cloudfoundry.archiveexpanding@v1.0.55 --buildpack org.cloudfoundry.openjdk@v1.0.29 --buildpack org.cloudfoundry.jvmapplication@v1.0.43 --buildpack /Users/shamus/work/go/src/github.com/shamus/tomcat-cnb uaa
+> pack build --builder cloudfoundry/cnb:cflinuxfs3 --buildpack org.cloudfoundry.archiveexpanding --buildpack org.cloudfoundry.openjdk --buildpack org.cloudfoundry.jvmapplication --buildpack ~/go/src/github.com/shamus/tomcat-cnb uaa
 
 Then check that the image showed up in docker
 
