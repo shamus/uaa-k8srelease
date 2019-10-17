@@ -22,6 +22,25 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      initContainers:
+      - name: generate-keystore
+        image: jordi/openssl
+        env:
+          - name: keyfile
+            value: "/var/run/secrets/uaa/uaa.key"
+          - name: crtfile
+            value: "/var/run/secrets/uaa/uaa.crt"
+          - name: keystore_pkcs12
+            value: "/var/run/secrets/keystore.pkcs12"
+          - name: password
+            value: "k0*l*s3cur1tyr0ck$"
+        command: ['/bin/bash']
+        args: ['-c', "openssl pkcs12 -export -name uaa_ssl_cert -inkey $keyfile -in $crtfile -out $keystore_pkcs12 -password pass:$password"]
+        volumeMounts:
+          - name: keystore-volume
+            mountPath: /var/run/secrets
+          - name: uaa-certs
+            mountPath: /var/run/secrets/uaa
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -52,6 +71,11 @@ spec:
             - name: CATALINA_OPTS
               value: "-Xmx768m -XX:MaxMetaspaceSize=256m"
       volumes:
+        - name: keystore-volume
+          emptyDir: {}
+        - name: uaa-certs
+          secret:
+            secretName: uaa-certs
         - name: uaa
           configMap:
             name: uaa
