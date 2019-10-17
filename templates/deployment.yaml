@@ -24,7 +24,8 @@ spec:
     {{- end }}
       initContainers:
       - name: generate-keystore
-        image: jordi/openssl
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
           - name: keyfile
             value: "/var/run/secrets/uaa/uaa.key"
@@ -48,6 +49,7 @@ spec:
           ports:
             - containerPort: 8080
           livenessProbe:
+            initialDelaySeconds: 3600
             httpGet:
               path: /healthz
               port: 8080
@@ -61,6 +63,8 @@ spec:
           - name: uaa
             mountPath: /workspace/uaa.yml
             subPath: uaa.yml
+          - name: keystore-volume
+            mountPath: /var/run/secrets
           - name: logs
             mountPath: /workspace/logs
           env:
