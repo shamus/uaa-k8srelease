@@ -15,39 +15,7 @@ service:
   nodePort: 30036
 
 ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths: []
-
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
-tomcat:
-  serverKey: |
+  key: |
     -----BEGIN PRIVATE KEY-----
     MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCth9BlCM1TfqDn
     A9OtvleXtjwiXOl+M3R3REAjDTYnsFPru092CN6R0lWCLeRH6T3LIDzh7auNL68W
@@ -77,7 +45,7 @@ tomcat:
     StWhR137PobGgPd2ltJFCSE=
     -----END PRIVATE KEY-----
 
-  serverCertificate: |
+  crt: |
     -----BEGIN CERTIFICATE-----
     MIIC+jCCAeICCQDuubi/nUzbhjANBgkqhkiG9w0BAQsFADA/MQswCQYDVQQGEwJV
     UzELMAkGA1UECAwCQ0ExCzAJBgNVBAcMAlNGMRYwFAYDVQQDDA11YWEubG9jYWxo
@@ -97,6 +65,75 @@ tomcat:
     kiBYVhHVac76yS7B33QzvhHE7/WZYJY1q4tvSaRKeQJ4qpdOe5lzdnIH7syaYg==
     -----END CERTIFICATE-----
 
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+tomcat:
+  key: |
+    -----BEGIN PRIVATE KEY-----
+    MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCth9BlCM1TfqDn
+    A9OtvleXtjwiXOl+M3R3REAjDTYnsFPru092CN6R0lWCLeRH6T3LIDzh7auNL68W
+    y2NZDl/r0yk3uhIzxr9fRTeVuCmT/fFa5+Kicoy33tMrUB0MKRx/m99wnGEDMkwA
+    zPEUCgl3RAJ7HICMqa59+K0jpveJsG0AaLvZ4J96wKk3MTUzWapWw4oBgFq5ZB9k
+    PNVoHyvL9JEifTd+/xargtyptQM27HZEw6OqqNcF6rK+9uXmmivXWrxdOyTWsCS/
+    RWvXVzY8izZmcLYJfqGeFhVwnEq/2izQuDczKj3H8KtmSleDgFZ4ZDOyjUPMso0p
+    qnirWdMDAgMBAAECggEAG4+rqLBqNC2zjp2L/Fd0ABOgn3CUYUf44oyDh02s4Ubf
+    PVyltUCZYR3AGQoC7Oz9tIptQREHo0gEjiFFqTpgP8ttC33RMEoL0SzkNDJo4CmA
+    MQkNdPGuqfGJJqL1yh2pehceuPsNaX2Olr32OFGTyU6S+ky/mhfFMBrUHQqC3GpX
+    Ena6lVwTGPr5MlBNGK9Ic73s0eWOOfjPLUGPeWf8ohnJS/tRDychOFuLqj9FNxER
+    yVoqbWvQXrmqOpdL0V/q6RaMdY3pAeBtBtBsMlOq7hWGXgYhbeuM8IypQsi0i25n
+    3z9awuSfaU4P6eE/pPoRM16vA8FAeuwYb6j2M02cmQKBgQDb4v0YivIgwJEK3AyG
+    UAnU6wbqjDdhih5YF2ylNZZkrXd9a8VRYLyoTmekb4BNfHgo+YaDEgpZ/iaruZpW
+    UTbjxeiqOXs2Yg73VvurYtBVEQXe0WAcsbkvrgNG3bM9VPbsI2HnqApTBRE21kcR
+    jFMJG60NC7Myn9MDjdwADXSXJQKBgQDKB86gxeCJ9yctrvKfw047UEfPyjlNzMwC
+    bDOnSGllD206h2in2+ZkC/nk4g/uKdvMKhyYQbKWQCi9zEpTm0wCK+wRmJZUOzEU
+    cD7bOEAEhJCepU8uCZyZA+5Dx0WkIHeYyB1TcqTjzYj6InEr4+b7uT3FBujqiJ6f
+    +H3tzRidBwKBgF/5YlkdBHPxOR2RUFIriy8I6nrjeqSzQW1XxA8UJbGJ2Va//F75
+    pz6bAjfOhyTLCDNyPhjlfekrujtIBqpYRmoCjvwFnNbu0/N3Xt++gIowpOxNXPMJ
+    S3gZLsr2p25EsIX/J5OST/dOheX2fwyUwAWAs/a2vZ+CDPtHJthLBzGVAoGAIx1u
+    RbV/DJvfvGn/E9O/gkG26Z/ti98/ymACLl5Aq2ceBiFJCHwJNHR8b9L3D99Iq9jZ
+    9YDdyI3IRwz+EkAY2vvFYV2TK3rKUhIcasABKIfeFyUGeSsEg/gR7sfxC9D02KJX
+    roxrqoir+UYJQ6auHCybVuaXj0RFxepMAQw37fsCgYEA1IAVF7PggUygma513zzz
+    9pb/C5aulZshwsRVjULNpPJVXeS6ZwDnWnXIjmIzjmXlefkG2K69ri9J+5N0UW8a
+    Z1FZnvhSkSTM6WvQ7+mV/LPuZGfLaScxLtuC9RNS5htzn5dM1kcfWp/Iu9af8byJ
+    StWhR137PobGgPd2ltJFCSE=
+    -----END PRIVATE KEY-----
+
+  crt: |
+    -----BEGIN CERTIFICATE-----
+    MIIC+jCCAeICCQDuubi/nUzbhjANBgkqhkiG9w0BAQsFADA/MQswCQYDVQQGEwJV
+    UzELMAkGA1UECAwCQ0ExCzAJBgNVBAcMAlNGMRYwFAYDVQQDDA11YWEubG9jYWxo
+    b3N0MB4XDTE5MTAyMzE4MDIyMFoXDTIwMTAyMjE4MDIyMFowPzELMAkGA1UEBhMC
+    VVMxCzAJBgNVBAgMAkNBMQswCQYDVQQHDAJTRjEWMBQGA1UEAwwNdWFhLmxvY2Fs
+    aG9zdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK2H0GUIzVN+oOcD
+    062+V5e2PCJc6X4zdHdEQCMNNiewU+u7T3YI3pHSVYIt5EfpPcsgPOHtq40vrxbL
+    Y1kOX+vTKTe6EjPGv19FN5W4KZP98Vrn4qJyjLfe0ytQHQwpHH+b33CcYQMyTADM
+    8RQKCXdEAnscgIyprn34rSOm94mwbQBou9ngn3rAqTcxNTNZqlbDigGAWrlkH2Q8
+    1WgfK8v0kSJ9N37/FquC3Km1AzbsdkTDo6qo1wXqsr725eaaK9davF07JNawJL9F
+    a9dXNjyLNmZwtgl+oZ4WFXCcSr/aLNC4NzMqPcfwq2ZKV4OAVnhkM7KNQ8yyjSmq
+    eKtZ0wMCAwEAATANBgkqhkiG9w0BAQsFAAOCAQEAeb7J7RLPFmVWTPsC5spsHCfu
+    SMep7X1EbnRZSczkW1Dh7DkOZoHPj7FzeeJfflhE5pHK0f+Hp4115WW96Ia5AMoE
+    tDALFX7LjV1r37TeGrVPhXb5Tn4XXr/CG0ZWXMHG3cmAXJsFnTvMO3R/K7z5LVHv
+    AoXovyS+tS8LtOhR+o6pxK6J9YLs7D5MKUUBMdmxQFaFJV+6JDzvDOcTjd0xE63J
+    BMt7ZORn4040CoDU79AqvFI1YPO14Hd1D/1/fzkLzKYeP0aCxxk9uBC+7b6YRh6m
+    kiBYVhHVac76yS7B33QzvhHE7/WZYJY1q4tvSaRKeQJ4qpdOe5lzdnIH7syaYg==
+    -----END CERTIFICATE-----
 
 uaa:
   protocol: https
