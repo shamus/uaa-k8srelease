@@ -1,36 +1,20 @@
-{{- if .Values.ingress.enabled -}}
-{{- $fullName := include "uaa-k8srelease.fullname" . -}}
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
-  labels:
-{{ include "uaa-k8srelease.labels" . | indent 4 }}
-  {{- with .Values.ingress.annotations }}
+  name: uaa-ingress
   annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
 spec:
-{{- if .Values.ingress.tls }}
   tls:
-  {{- range .Values.ingress.tls }}
-    - hosts:
-      {{- range .hosts }}
-        - {{ . | quote }}
-      {{- end }}
-      secretName: {{ .secretName }}
-  {{- end }}
-{{- end }}
+  - hosts:
+    - {{ .Values.uaa.host }}
+    secretName: ingress-certs
   rules:
-  {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
-      http:
-        paths:
-        {{- range .paths }}
-          - path: {{ . }}
-            backend:
-              serviceName: {{ $fullName }}
-              servicePort: http
-        {{- end }}
-  {{- end }}
-{{- end }}
+  - host: {{ .Values.uaa.host }}
+    http:
+      paths:
+      - path: /(.*)
+        backend:
+          serviceName: {{ include "uaa-k8srelease.fullname" . }}
+          servicePort: {{ .Values.service.port }}
