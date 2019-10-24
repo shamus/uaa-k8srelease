@@ -5,6 +5,11 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+initImage:
+  repository: init-container
+  tag: latest
+  pullPolicy: IfNotPresent
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
@@ -137,17 +142,18 @@ tomcat:
 
 uaa:
   protocol: https
-  host: uaa.localhost
-  database:
-    scheme: postgresql
-    tls: disabled
-    address: localhost
-    port: 3309
-    name: uaa
-    user: root
-    password: changme
+  host: uaa.local
+  # database:
+  #   scheme: postgresql
+  #   tls: disabled
+  #   address: localhost
+  #   port: 3309
+  #   name: uaa
+  #   user: root
+  #   password: changme
 
-
+  useRfc3339: false
+  logLevel: DEBUG
   defaultGroups:
     zones.read: Read identity zones
     zones.write: Create and update identity zones

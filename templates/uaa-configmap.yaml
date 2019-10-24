@@ -1,4 +1,7 @@
+{{- $mysqlTLS := dict "enabled" "useSSL=true" "enabled_skip_hostname_validation" "useSSL=true&disableSslHostnameVerification=true" "enabled_skip_all_validation" "useSSL=true&trustServerCertificate=true" "disabled" "useSSL=false" }}
+{{- $postgresqlTLS := dict "enabled" "sslmode=verify-full&sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory" "enabled_skip_hostname_validation" "sslmode=verify-ca&sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory" "enabled_skip_all_validation" "sslmode=require" "disabled" "sslmode=disable" }}
 {{- $uaaURL := printf "%s://%s/" .Values.uaa.protocol .Values.uaa.host -}}
+{{- $springProfiles := (list ) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -27,6 +30,42 @@ data:
 
     issuer:
       uri: {{ printf "%s://%s" .Values.uaa.protocol .Values.uaa.host }}
+
+    logging:
+      config: /workspace/log4j2.properties
+
+    {{- if .Values.uaa.database }}
+    {{- $springProfiles = append $springProfiles .Values.uaa.database.scheme }}
+    {{- $dbURL := printf "jdbc:%s://%s:%s/%s" .Values.uaa.database.scheme .Values.uaa.database.address (toString .Values.uaa.database.port) .Values.uaa.database.name }}
+    {{- $sslOpts := pluck .Values.uaa.database.tls $mysqlTLS | first }}
+    {{- if eq "postgresql" .Values.uaa.database.scheme }}
+      {{- $sslOpts = pluck .Values.uaa.database.tls $postgresqlTLS | first}}
+    {{- end }}
+    database:
+      url:  {{ printf "%s?%s" $dbURL $sslOpts }}
+      username: {{ .Values.uaa.database.user }}
+      password: {{ .Values.uaa.database.password }}
+      maxactive: 100
+      maxidle: 10
+      minidle: 0
+      removeabandoned: false
+      logabandoned: true
+      abandonedtimeout: 300
+    {{- end }}
+
+    spring_profiles: {{ $springProfiles | join "," }}
+
+    encryption:
+      active_key_label: CHANGE-THIS-KEY
+      encryption_keys:
+      - label: CHANGE-THIS-KEY
+        passphrase: CHANGEME
+
+    LOGIN_SECRET: loginsecret
+
+    jwt:
+      token:
+        signing-key: tokenKey
 
     login:
       url: {{ $uaaURL }}
@@ -107,34 +146,3 @@ data:
             - HEAD
             - OPTIONS
 
-      {{- if .Values.uaa.database }}
-      {{- $mysqlTLS := dict "enabled" "useSSL=true" "enabled_skip_hostname_validation" "useSSL=true&disableSslHostnameVerification=true" "enabled_skip_all_validation" "useSSL=true&trustServerCertificate=true" "disabled" "useSSL=false" }}
-      {{- $postgresqlTLS := dict "enabled" "sslmode=verify-full&sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory" "enabled_skip_hostname_validation" "sslmode=verify-ca&sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory" "enabled_skip_all_validation" "sslmode=require" "disabled" "sslmode=disable" }}
-      {{- $dbURL := printf "jdbc:%s://%s:%s/%s" .Values.uaa.database.scheme .Values.uaa.database.address (toString .Values.uaa.database.port) .Values.uaa.database.name }}
-      {{- $sslOpts := pluck .Values.uaa.database.tls $mysqlTLS | first }}
-      {{- if eq "postgresql" .Values.uaa.database.scheme }}
-        {{- $sslOpts = pluck .Values.uaa.database.tls $postgresqlTLS | first}}
-      {{- end }}
-      database:
-        url:  {{ printf "%s?%s" $dbURL $sslOpts }}
-        username: {{ .Values.uaa.database.user }}
-        password: {{ .Values.uaa.database.password }}
-        maxactive: 100
-        maxidle: 10
-        minidle: 0
-        removeabandoned: false
-        logabandoned: true
-        abandonedtimeout: 300
-      {{- end }}
-
-    encryption:
-      active_key_label: CHANGE-THIS-KEY
-      encryption_keys:
-      - label: CHANGE-THIS-KEY
-        passphrase: CHANGEME
-
-    LOGIN_SECRET: loginsecret
-
-    jwt:
-      token:
-        signing-key: tokenKey
